@@ -1,6 +1,5 @@
 import { lazy } from "react";
 
-// Define route paths
 export const ROUTES = {
   HOME: "/",
   LOGIN: "/login",
@@ -53,21 +52,21 @@ const routes: RouteConfig[] = [
     component: lazy(() => import("@/pages/Transactions")),
     isProtected: true,
   },
-  {
-    path: ROUTES.REPORTS,
-    component: lazy(() => import("@/pages/Reports")),
-    isProtected: true,
-  },
-  {
-    path: ROUTES.RECEIPT,
-    component: lazy(() => import("@/pages/Receipt")),
-    isProtected: true,
-  },
-  {
-    path: ROUTES.NOT_FOUND,
-    component: lazy(() => import("@/pages/NotFound")),
-    isProtected: false,
-  },
+  //   {
+  //     path: ROUTES.REPORTS,
+  //     component: lazy(() => import("@/pages/Reports")),
+  //     isProtected: true,
+  //   },
+  //   {
+  //     path: ROUTES.RECEIPT,
+  //     component: lazy(() => import("@/pages/Receipt")),
+  //     isProtected: true,
+  //   },
+  //   {
+  //     path: ROUTES.NOT_FOUND,
+  //     component: lazy(() => import("@/pages/NotFound")),
+  //     isProtected: false,
+  //   },
 ];
 
 export default routes;
