@@ -1,4 +1,3 @@
-// src/routes/routes.ts
 import { lazy } from "react";
 
 // Define route paths
@@ -6,6 +5,11 @@ export const ROUTES = {
   HOME: "/",
   LOGIN: "/login",
   DASHBOARD: "/dashboard",
+  PRODUCT_DETAILS: "/product-details",
+  SUMMARY: "/summary",
+  TRANSACTIONS: "/transactions",
+  REPORTS: "/reports",
+  RECEIPT: "/receipt/:id",
   NOT_FOUND: "*",
 };
 
@@ -21,8 +25,8 @@ export interface RouteConfig {
 const routes: RouteConfig[] = [
   {
     path: ROUTES.HOME,
-    component: lazy(() => import("@/pages/Home")),
-    isProtected: false,
+    component: lazy(() => import("@/pages/Dashboard")),
+    isProtected: true,
   },
   {
     path: ROUTES.LOGIN,
@@ -32,6 +36,31 @@ const routes: RouteConfig[] = [
   {
     path: ROUTES.DASHBOARD,
     component: lazy(() => import("@/pages/Dashboard")),
+    isProtected: true,
+  },
+  {
+    path: ROUTES.PRODUCT_DETAILS,
+    component: lazy(() => import("@/pages/ProductDetails")),
+    isProtected: true,
+  },
+  {
+    path: ROUTES.SUMMARY,
+    component: lazy(() => import("@/pages/Summary")),
+    isProtected: true,
+  },
+  {
+    path: ROUTES.TRANSACTIONS,
+    component: lazy(() => import("@/pages/Transactions")),
+    isProtected: true,
+  },
+  {
+    path: ROUTES.REPORTS,
+    component: lazy(() => import("@/pages/Reports")),
+    isProtected: true,
+  },
+  {
+    path: ROUTES.RECEIPT,
+    component: lazy(() => import("@/pages/Receipt")),
     isProtected: true,
   },
   {
