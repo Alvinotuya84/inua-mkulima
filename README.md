@@ -99,7 +99,7 @@ src/
 │   │── useToast.ts          # Toast notifications
 │
 │── utils/
-│   │── api.utils.ts         # API utility functions
+│   │── fetch.utils.ts         # API utility functions
 │   │── auth-utils.ts        # Authentication utilities
 │   │── format.utils.ts      # Formatting helpers
 │
