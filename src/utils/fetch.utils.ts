@@ -1,8 +1,7 @@
 import { handleErrorResponse } from "./error.utils";
-import useUserStore from "@/stores/user.store";
+import useUserStore from "@/stores/user.stores";
 import { BASE_URL } from "@/constants/network";
 import { toast } from "@/hooks/use-toast";
-import { RefreshTokenResponse } from "@/hooks/use-refresh-token";
 interface FetchWrapperOptions {
   excludeAuthHeader: boolean;
 }
@@ -656,7 +655,7 @@ export async function handleSessionExpiry(status: number): Promise<boolean> {
     if (!isRefreshing) {
       isRefreshing = true;
       try {
-        const response = await postJson<RefreshTokenResponse["data"]>(
+        const response = await postJson(
           `${BASE_URL}/auth/refresh`,
           { refresh_token: refreshToken },
           { excludeAuthHeader: true }
