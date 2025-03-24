@@ -49,11 +49,11 @@ const routes: RouteConfig[] = [
     component: lazy(() => import("@/pages/Transactions")),
     isProtected: true,
   },
-  //   {
-  //     path: ROUTES.REPORTS,
-  //     component: lazy(() => import("@/pages/Reports")),
-  //     isProtected: true,
-  //   },
+  {
+    path: ROUTES.REPORTS,
+    component: lazy(() => import("@/pages/Reports")),
+    isProtected: true,
+  },
   //   {
   //     path: ROUTES.RECEIPT,
   //     component: lazy(() => import("@/pages/Receipt")),
