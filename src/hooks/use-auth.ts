@@ -7,7 +7,6 @@ import useUserStore from "@/stores/user.stores";
 import { toast } from "@/hooks/use-toast";
 import { postJson } from "@/utils/fetch.utils";
 
-// Validation schemas
 export const usernameSchema = z.object({
   username: z.string().min(1, "Username is required"),
 });
@@ -16,7 +15,6 @@ export const passwordSchema = z.object({
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
-// Combined schema for the complete login form
 export const loginSchema = z.object({
   username: z.string().min(1, "Username is required"),
   password: z.string().min(6, "Password must be at least 6 characters"),
@@ -24,7 +22,6 @@ export const loginSchema = z.object({
 
 export type LoginFormData = z.infer<typeof loginSchema>;
 
-// Auth response type from dummyjson API
 interface AuthResponse {
   id: number;
   username: string;
@@ -47,11 +44,9 @@ export const useAuth = () => {
     logout: storeLogout,
   } = useUserStore();
 
-  // Login mutation with React Query
   const loginMutation = useMutation({
     mutationFn: async (data: LoginFormData) => {
       try {
-        // Use the postJson function to make the API call
         const response = await postJson<AuthResponse>(
           `${BASE_URL}/auth/login`,
           {
@@ -61,7 +56,6 @@ export const useAuth = () => {
           { excludeAuthHeader: true }
         );
 
-        // Return the response
         return response;
       } catch (error) {
         console.error("Login error:", error);
@@ -72,14 +66,12 @@ export const useAuth = () => {
       if (response.accessToken) {
         const userData = response;
 
-        // Set user data in store
         setUser({
           id: userData.id.toString(),
           email: userData.email,
           name: `${userData.firstName} ${userData.lastName}`,
         });
 
-        // Set tokens
         setToken(userData.accessToken);
         if (userData.refreshToken) {
           setRefreshToken(userData.refreshToken);

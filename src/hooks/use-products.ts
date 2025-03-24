@@ -36,12 +36,10 @@ export const useProducts = () => {
         `${BASE_URL}/products`
       );
 
-      // Transform the products to match our application's format
       const transformedProducts = response.products.map((product) => ({
         ...product,
-        // For demonstration purposes, we're converting the price to KES
-        // In a real app, you might have actual KES prices from your API
-        price: Math.round(product.price * 150), // Assuming 1 USD = 150 KES
+
+        price: Math.round(product.price * 150),
       }));
 
       setProducts(transformedProducts);
@@ -67,10 +65,7 @@ export const useProducts = () => {
     return products.find((product) => product.id === id) || null;
   };
 
-  // For the Inua Mkulima application, we'll provide agricultural products
   const getAgricultureProducts = () => {
-    // In a real app, you'd have actual agricultural products or filter by category
-    // Here we're just simulating agricultural products based on the existing data
     return [
       {
         id: 1,
