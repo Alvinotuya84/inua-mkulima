@@ -8,8 +8,8 @@ import {
   Typography,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { useTransactions } from "@/hooks/useTransactions";
-import TransactionReceipt from "@/components/common/TransactionReceipt";
+import { useTransactions } from "@/hooks/use-transaction";
+import TransactionReceipt from "@/components/common/TransactionReciept";
 import { toast } from "@/hooks/use-toast";
 
 const Receipt: React.FC = () => {
@@ -24,8 +24,7 @@ const Receipt: React.FC = () => {
     const fetchReceipt = async () => {
       try {
         setIsLoading(true);
-        // In a real application, you would fetch the receipt from your API
-        // Here we're using the mock function from useTransactions
+
         if (id) {
           const receiptData = getTransactionReceipt(id);
           setReceipt(receiptData);
@@ -39,7 +38,6 @@ const Receipt: React.FC = () => {
         toast({
           title: "Error",
           description: errorMessage,
-          duration: 3000,
           variant: "destructive",
         });
       } finally {
@@ -58,8 +56,6 @@ const Receipt: React.FC = () => {
     toast({
       title: "Receipt Downloaded",
       description: "Transaction receipt has been downloaded successfully",
-      duration: 3000,
-      variant: "success",
     });
   };
 
