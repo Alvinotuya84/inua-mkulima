@@ -136,7 +136,7 @@ export async function postJson<T>(
   options: FetchWrapperOptions = {
     excludeAuthHeader: false,
   }
-): Promise<FetchResponseWrapper<T>> {
+): Promise<T> {
   const makeRequest = async () => {
     const token = useUserStore.getState().token ?? null;
     const headers_ =

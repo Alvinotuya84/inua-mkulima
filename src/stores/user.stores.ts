@@ -12,10 +12,11 @@ interface User {
 interface UserState {
   user: User | null;
   token: string | null;
-
+  refreshToken: string | null;
   tempEmail: string | null;
   setUser: (user: User | null) => void;
   setToken: (token: string | null) => void;
+  setRefreshToken: (refreshToken: string | null) => void;
   setTempEmail: (email: string | null) => void;
   logout: () => void;
 }
@@ -25,8 +26,11 @@ const useUserStore = create<UserState>()(
     (set) => ({
       user: null,
       token: null,
+      refreshToken: null,
       tempEmail: null,
+
       setUser: (user) => set({ user }),
+
       setToken: (token) => {
         if (token) {
           setAuthToken(token);
@@ -36,10 +40,18 @@ const useUserStore = create<UserState>()(
         set({ token });
       },
 
+      setRefreshToken: (refreshToken) => set({ refreshToken }),
+
       setTempEmail: (email) => set({ tempEmail: email }),
+
       logout: () => {
         removeAuthToken();
-        set({ user: null, token: null, tempEmail: null });
+        set({
+          user: null,
+          token: null,
+          refreshToken: null,
+          tempEmail: null,
+        });
       },
     }),
     {

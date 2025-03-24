@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   AppBar,
@@ -27,7 +27,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useAuth } from "@/hooks/use-auth";
 import useUserStore from "@/stores/user.stores";
 
-const MainLayout: React.FC = () => {
+const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const navigate = useNavigate();
   const { logout } = useAuth();
   const user = useUserStore((state) => state.user);
@@ -186,7 +186,7 @@ const MainLayout: React.FC = () => {
       {/* Main content */}
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <Toolbar />
-        <Outlet />
+        {children}
       </Box>
 
       {/* Logout confirmation dialog */}

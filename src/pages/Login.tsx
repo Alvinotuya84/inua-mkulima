@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import farmerBg from "@/assets/utils/farmer.png";
+
 import {
   TextField,
   Button,
@@ -9,28 +11,58 @@ import {
   Typography,
   InputAdornment,
   IconButton,
+  CircularProgress,
 } from "@mui/material";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { loginSchema, LoginFormData, useAuth } from "@/hooks/use-auth";
+import { Visibility, VisibilityOff, ArrowForward } from "@mui/icons-material";
+import {
+  usernameSchema,
+  passwordSchema,
+  LoginFormData,
+  useAuth,
+} from "@/hooks/use-auth";
 
 const Login: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [step, setStep] = useState<"username" | "password">("username");
   const { login, isLoading, error } = useAuth();
 
+  // Create separate forms for username and password steps
   const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema),
+    control: usernameControl,
+    handleSubmit: handleUsernameSubmit,
+    formState: { errors: usernameErrors },
+    watch: watchUsername,
+  } = useForm({
+    resolver: zodResolver(usernameSchema),
     defaultValues: {
       username: "",
+    },
+  });
+
+  const {
+    control: passwordControl,
+    handleSubmit: handlePasswordSubmit,
+    formState: { errors: passwordErrors },
+  } = useForm({
+    resolver: zodResolver(passwordSchema),
+    defaultValues: {
       password: "",
     },
   });
 
-  const onSubmit = async (data: LoginFormData) => {
-    await login(data);
+  // Get current username from the form
+  const username = watchUsername("username");
+
+  const onUsernameSubmit = async () => {
+    // Simply move to password step without verification
+    setStep("password");
+  };
+
+  const onPasswordSubmit = (data: any) => {
+    login({
+      username,
+      password: data.password,
+    });
   };
 
   const togglePasswordVisibility = () => {
@@ -64,61 +96,12 @@ const Login: React.FC = () => {
           sx={{
             flex: 1,
             display: { xs: "none", md: "block" },
-            backgroundImage: "url(/farmer-image.jpg)",
+            backgroundImage: `url(${farmerBg})`,
             backgroundSize: "cover",
             backgroundPosition: "center",
             position: "relative",
           }}
-        >
-          <Box
-            sx={{
-              position: "absolute",
-              top: 30,
-              left: 30,
-              display: "flex",
-              alignItems: "center",
-              color: "white",
-            }}
-          >
-            <Typography
-              variant="h4"
-              component="div"
-              sx={{
-                fontWeight: "bold",
-                color: "white",
-                textShadow: "0px 2px 4px rgba(0,0,0,0.5)",
-              }}
-            >
-              BANK
-            </Typography>
-          </Box>
-
-          <Box
-            sx={{
-              position: "absolute",
-              bottom: 30,
-              right: 30,
-              textAlign: "right",
-            }}
-          >
-            <img
-              src="/county-logo.png"
-              alt="County Logo"
-              style={{ width: 100, height: "auto" }}
-            />
-            <Typography
-              variant="subtitle1"
-              sx={{
-                color: "white",
-                mt: 1,
-                fontStyle: "italic",
-                textShadow: "0px 2px 4px rgba(0,0,0,0.5)",
-              }}
-            >
-              Growing together
-            </Typography>
-          </Box>
-        </Box>
+        />
 
         {/* Right side - Login Form */}
         <Paper
@@ -164,94 +147,153 @@ const Login: React.FC = () => {
               Subsidy Program
             </Typography>
 
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <Box sx={{ mb: 3 }}>
-                <Typography
-                  variant="subtitle1"
+            {/* Username step */}
+            {step === "username" && (
+              <form onSubmit={handleUsernameSubmit(onUsernameSubmit)}>
+                <Box sx={{ mb: 3 }}>
+                  <Typography
+                    variant="subtitle1"
+                    sx={{
+                      mb: 1,
+                      textAlign: "left",
+                      color: "#656565",
+                    }}
+                  >
+                    Enter your username to continue
+                  </Typography>
+
+                  <Controller
+                    name="username"
+                    control={usernameControl}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        label="Username"
+                        variant="outlined"
+                        fullWidth
+                        margin="normal"
+                        error={!!usernameErrors.username}
+                        helperText={usernameErrors.username?.message}
+                        autoFocus
+                      />
+                    )}
+                  />
+                </Box>
+
+                <Button
+                  type="submit"
+                  variant="contained"
+                  fullWidth
+                  size="large"
+                  endIcon={<ArrowForward />}
                   sx={{
-                    mb: 1,
-                    textAlign: "left",
-                    color: "#656565",
+                    mt: 2,
+                    py: 1.5,
+                    backgroundColor: "#E0B643",
+                    "&:hover": {
+                      backgroundColor: "#C9A43B",
+                    },
                   }}
                 >
-                  Enter your password to continue
-                </Typography>
+                  Continue
+                </Button>
+              </form>
+            )}
 
-                <Controller
-                  name="username"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      label="Username"
-                      variant="outlined"
-                      fullWidth
-                      margin="normal"
-                      error={!!errors.username}
-                      helperText={errors.username?.message}
-                    />
-                  )}
-                />
+            {/* Password step */}
+            {step === "password" && (
+              <form onSubmit={handlePasswordSubmit(onPasswordSubmit)}>
+                <Box sx={{ mb: 3 }}>
+                  <Typography
+                    variant="subtitle1"
+                    sx={{
+                      mb: 1,
+                      textAlign: "left",
+                      color: "#656565",
+                    }}
+                  >
+                    Hello, <strong>{username}</strong>
+                    <br />
+                    Enter your password to continue
+                  </Typography>
 
-                <Controller
-                  name="password"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      label="Password"
-                      type={showPassword ? "text" : "password"}
-                      variant="outlined"
-                      fullWidth
-                      margin="normal"
-                      error={!!errors.password}
-                      helperText={errors.password?.message}
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <IconButton
-                              aria-label="toggle password visibility"
-                              onClick={togglePasswordVisibility}
-                              edge="end"
-                            >
-                              {showPassword ? (
-                                <VisibilityOff />
-                              ) : (
-                                <Visibility />
-                              )}
-                            </IconButton>
-                          </InputAdornment>
-                        ),
-                      }}
-                    />
-                  )}
-                />
-              </Box>
+                  <Controller
+                    name="password"
+                    control={passwordControl}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        label="Password"
+                        type={showPassword ? "text" : "password"}
+                        variant="outlined"
+                        fullWidth
+                        margin="normal"
+                        error={!!passwordErrors.password}
+                        helperText={passwordErrors.password?.message}
+                        autoFocus
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <IconButton
+                                aria-label="toggle password visibility"
+                                onClick={togglePasswordVisibility}
+                                edge="end"
+                              >
+                                {showPassword ? (
+                                  <VisibilityOff />
+                                ) : (
+                                  <Visibility />
+                                )}
+                              </IconButton>
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+                    )}
+                  />
+                </Box>
 
-              {error && (
-                <Typography color="error" variant="body2" sx={{ mb: 2 }}>
-                  {error}
-                </Typography>
-              )}
+                {error && (
+                  <Typography color="error" variant="body2" sx={{ mb: 2 }}>
+                    {error}
+                  </Typography>
+                )}
 
-              <Button
-                type="submit"
-                variant="contained"
-                fullWidth
-                size="large"
-                disabled={isLoading}
-                sx={{
-                  mt: 2,
-                  py: 1.5,
-                  backgroundColor: "#E0B643",
-                  "&:hover": {
-                    backgroundColor: "#C9A43B",
-                  },
-                }}
-              >
-                {isLoading ? "Signing in..." : "Sign in"}
-              </Button>
-            </form>
+                <Box sx={{ display: "flex", gap: 2 }}>
+                  <Button
+                    variant="outlined"
+                    size="large"
+                    onClick={() => setStep("username")}
+                    sx={{
+                      mt: 2,
+                      py: 1.5,
+                      flex: 1,
+                    }}
+                  >
+                    Back
+                  </Button>
+
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    fullWidth
+                    size="large"
+                    disabled={isLoading}
+                    sx={{
+                      mt: 2,
+                      py: 1.5,
+                      flex: 2,
+                      backgroundColor: "#E0B643",
+                      "&:hover": {
+                        backgroundColor: "#C9A43B",
+                      },
+                    }}
+                  >
+                    {isLoading ? "Signing in..." : "Sign in"}
+                  </Button>
+                </Box>
+              </form>
+            )}
           </Box>
         </Paper>
       </Box>

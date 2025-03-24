@@ -1,12 +1,25 @@
-// src/routes/AppRouter.tsx
 import { Suspense } from "react";
-import { Routes, Route } from "react-router-dom";
-import ProtectedRoute from "./ProtectedRoutes";
+import { Routes, Route, Navigate } from "react-router-dom";
 import routes from "./route";
 import MainLayout from "@/layouts/MainLayout";
+import AuthLayout from "@/layouts/AuthLayout";
+import useUserStore from "@/stores/user.stores";
 
-// Loading component for Suspense fallback
-const Loading = () => <div>Loading...</div>;
+const Loading = () => (
+  <div className="flex items-center justify-center h-screen">Loading...</div>
+);
+
+// Protected Route component
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const token = useUserStore((state) => state.token);
+
+  if (!token) {
+    // Redirect to login if not authenticated
+    return <Navigate to="/login" replace />;
+  }
+
+  return children;
+};
 
 const AppRouter = () => {
   return (
@@ -14,15 +27,11 @@ const AppRouter = () => {
       <Routes>
         {routes.map((route) => {
           const Component = route.component;
-          const Layout = route.layout || MainLayout;
 
-          // Determine the final component based on protection status
-          const FinalComponent = () => (
-            <Layout>
-              <Component />
-            </Layout>
-          );
+          // Determine which layout to use
+          const Layout = route.path === "/login" ? AuthLayout : MainLayout;
 
+          // For login page, we want AuthLayout, for others MainLayout
           return (
             <Route
               key={route.path}
@@ -30,10 +39,14 @@ const AppRouter = () => {
               element={
                 route.isProtected ? (
                   <ProtectedRoute>
-                    <FinalComponent />
+                    <Layout>
+                      <Component />
+                    </Layout>
                   </ProtectedRoute>
                 ) : (
-                  <FinalComponent />
+                  <Layout>
+                    <Component />
+                  </Layout>
                 )
               }
             />

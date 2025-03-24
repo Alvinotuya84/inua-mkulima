@@ -1,19 +1,17 @@
-// src/routes/ProtectedRoute.tsx
+import { ReactNode } from "react";
 import { Navigate, useLocation } from "react-router-dom";
-import useUserStore from "@/stores/user.stores"; // Adjust the path as needed
-import { ROUTES } from "./route";
+import useUserStore from "@/stores/user.stores";
 
 interface ProtectedRouteProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const { token } = useUserStore();
+const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
+  const token = useUserStore((state) => state.token);
   const location = useLocation();
 
   if (!token) {
-    // Redirect to login page if user is not authenticated
-    return <Navigate to={ROUTES.LOGIN} state={{ from: location }} replace />;
+    return <Navigate to="/dashboard" state={{ from: location }} replace />;
   }
 
   return <>{children}</>;
