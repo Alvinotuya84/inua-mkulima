@@ -19,7 +19,7 @@ The application offers a seamless interface for agro-dealers to manage product s
 ## Tech Stack
 
 - **Frontend**: React.js, TypeScript
-- **UI Framework**: Material UI, Shadcn UI components
+- **UI Framework**: Material UI
 - **State Management**: Zustand for global state
 - **API Integration**: React Query for data fetching
 - **Form Handling**: React Hook Form with Zod validation
@@ -89,7 +89,7 @@ src/
 │   │── AuthLayout.tsx       # Layout for authentication pages
 │
 │── components/
-│   │── ui/                  # Shadcn UI components
+│   │── ui/                  # UI components
 │   │── common/              # Shared components
 │
 │── hooks/
