@@ -38,7 +38,7 @@ The application offers a seamless interface for agro-dealers to manage product s
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/your-username/inua-mkulima.git
+   git clone https://github.com/Alvinotuya84/inua-mkulima.git
    cd inua-mkulima
    ```
 
@@ -51,7 +51,7 @@ The application offers a seamless interface for agro-dealers to manage product s
 3. Create a `.env` file in the root directory:
 
    ```
-   VITE_API_BASE_URL=https://your-api-url.com/api
+   VITE_API_BASE_URL=https://dummyjson.com
    ```
 
 4. Start the development server:
