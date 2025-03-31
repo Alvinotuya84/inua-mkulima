@@ -46,11 +46,11 @@ const routes: RouteConfig[] = [
     component: lazy(() => import("@/pages/ProductDetails")),
     isProtected: true,
   },
-  // {
-  //   path: ROUTES.PRODUCT_VIEW,
-  //   component: lazy(() => import("@/pages/ProductDetail")),
-  //   isProtected: true,
-  // },
+  {
+    path: ROUTES.PRODUCT_VIEW,
+    component: lazy(() => import("@/pages/ProductDetails")),
+    isProtected: true,
+  },
   {
     path: ROUTES.SUMMARY,
     component: lazy(() => import("@/pages/Summary")),
