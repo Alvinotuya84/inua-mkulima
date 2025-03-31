@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { BASE_URL } from "@/constants/network";
 import { toast } from "@/hooks/use-toast";
 import { fetchJson } from "@/utils/fetch.utils";
@@ -8,11 +9,13 @@ export interface Product {
   title: string;
   description: string;
   price: number;
-  category: string;
   discountPercentage: number;
+  rating: number;
   stock: number;
   brand: string;
+  category: string;
   thumbnail: string;
+  images: string[];
 }
 
 export interface ProductsResponse {
@@ -22,115 +25,151 @@ export interface ProductsResponse {
   limit: number;
 }
 
+export interface ProductSearchOptions {
+  searchQuery?: string;
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
+  page?: number;
+  limit?: number;
+  category?: string;
+}
+
 export const useProducts = () => {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [searchOptions, setSearchOptions] = useState<ProductSearchOptions>({
+    searchQuery: "",
+    sortBy: "title",
+    sortOrder: "asc",
+    page: 1,
+    limit: 12,
+    category: "all",
+  });
 
-  const fetchProducts = async () => {
-    setIsLoading(true);
-    setError(null);
+  // Fetch all categories
+  const categoriesQuery = useQuery({
+    queryKey: ["categories"],
+    queryFn: async () => {
+      try {
+        const categories = await fetchJson<string[]>(
+          `${BASE_URL}/products/categories`
+        );
+        return categories;
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+        toast({
+          title: "Error",
+          description: "Failed to load product categories",
+          variant: "destructive",
+        });
+        throw error;
+      }
+    },
+    staleTime: 30 * 60 * 1000,
+  });
 
-    try {
-      const response = await fetchJson<ProductsResponse>(
-        `${BASE_URL}/products`
-      );
+  const productsQuery = useQuery({
+    queryKey: ["products", searchOptions],
+    queryFn: async () => {
+      try {
+        const { searchQuery, sortBy, sortOrder, page, limit, category } =
+          searchOptions;
+        let url = `${BASE_URL}/products`;
 
-      const transformedProducts = response.products.map((product) => ({
-        ...product,
+        if (searchQuery) {
+          url = `${BASE_URL}/products/search?q=${searchQuery}`;
+        } else if (category && category !== "all") {
+          url = `${BASE_URL}/products/category/${category}`;
+        }
 
-        price: Math.round(product.price * 150),
-      }));
+        const separator = url.includes("?") ? "&" : "?";
+        url += `${separator}sortBy=${sortBy}&order=${sortOrder}&limit=${limit}&skip=${
+          (page - 1) * limit
+        }`;
 
-      setProducts(transformedProducts);
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : "Failed to fetch products";
-      setError(errorMessage);
-      toast({
-        title: "Error",
-        description: errorMessage,
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
+        const response = await fetchJson<ProductsResponse>(url);
+
+        response.products = response.products.map((product) => ({
+          ...product,
+          price: Math.round(product.price * 150),
+        }));
+
+        return response;
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        toast({
+          title: "Error",
+          description: "Failed to load products",
+          duration: 3000,
+          variant: "destructive",
+        });
+        throw error;
+      }
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const getProductById = (productId: number) => {
+    return useQuery({
+      queryKey: ["product", productId],
+      queryFn: async () => {
+        try {
+          const product = await fetchJson<Product>(
+            `${BASE_URL}/products/${productId}`
+          );
+          return {
+            ...product,
+            price: Math.round(product.price * 150),
+          };
+        } catch (error) {
+          console.error(`Error fetching product ${productId}:`, error);
+          toast({
+            title: "Error",
+            description: "Failed to load product details",
+            duration: 3000,
+            variant: "destructive",
+          });
+          throw error;
+        }
+      },
+      staleTime: 10 * 60 * 1000, // 10 minutes
+    });
   };
 
-  useEffect(() => {
-    fetchProducts();
-  }, []);
-
-  const getProductById = (id: number) => {
-    return products.find((product) => product.id === id) || null;
-  };
-
-  const getAgricultureProducts = () => {
-    return [
-      {
-        id: 1,
-        title: "Animal feeds 10kg",
-        price: 1500,
-        category: "agriculture",
-        stock: 50,
-        discountPercentage: 0,
-        description: "High quality animal feeds",
-        brand: "FarmFresh",
-        thumbnail: "",
-      },
-      {
-        id: 2,
-        title: "Mineral salts 500g",
-        price: 300,
-        category: "agriculture",
-        stock: 100,
-        discountPercentage: 0,
-        description: "Essential mineral supplements for livestock",
-        brand: "VitaGro",
-        thumbnail: "",
-      },
-      {
-        id: 3,
-        title: "Maize seeds 2kg",
-        price: 360,
-        category: "agriculture",
-        stock: 75,
-        discountPercentage: 0,
-        description: "High yield maize seed variety",
-        brand: "SeedTech",
-        thumbnail: "",
-      },
-      {
-        id: 4,
-        title: "Mango seedling 1pc",
-        price: 150,
-        category: "agriculture",
-        stock: 40,
-        discountPercentage: 0,
-        description: "Quality mango seedlings ready for transplanting",
-        brand: "FruitGrow",
-        thumbnail: "",
-      },
-      {
-        id: 5,
-        title: "Mango fruit fly trap 1pc",
-        price: 1500,
-        category: "agriculture",
-        stock: 30,
-        discountPercentage: 0,
-        description: "Effective trap for mango fruit flies",
-        brand: "PestGuard",
-        thumbnail: "",
-      },
-    ];
+  const updateSearchOptions = (newOptions: Partial<ProductSearchOptions>) => {
+    setSearchOptions((prev) => ({
+      ...prev,
+      ...newOptions,
+      page: newOptions.page || ("page" in newOptions ? newOptions.page : 1),
+    }));
   };
 
   return {
-    products,
-    agriculturalProducts: getAgricultureProducts(),
-    isLoading,
-    error,
-    refreshProducts: fetchProducts,
+    products: productsQuery.data?.products || [],
+    totalProducts: productsQuery.data?.total || 0,
+    currentPage: searchOptions.page,
+    totalPages: productsQuery.data
+      ? Math.ceil(productsQuery.data.total / searchOptions.limit)
+      : 0,
+    isLoadingProducts: productsQuery.isLoading,
+    isErrorProducts: productsQuery.isError,
+    refetchProducts: productsQuery.refetch,
+
+    categories: categoriesQuery.data || [],
+    isLoadingCategories: categoriesQuery.isLoading,
+    isErrorCategories: categoriesQuery.isError,
+
+    searchOptions,
+    updateSearchOptions,
     getProductById,
+
+    // Convenience methods
+    setSearchQuery: (query: string) =>
+      updateSearchOptions({ searchQuery: query, page: 1 }),
+    setSortBy: (sortBy: string) => updateSearchOptions({ sortBy }),
+    setSortOrder: (sortOrder: "asc" | "desc") =>
+      updateSearchOptions({ sortOrder }),
+    setPage: (page: number) => updateSearchOptions({ page }),
+    setLimit: (limit: number) => updateSearchOptions({ limit, page: 1 }),
+    setCategory: (category: string) =>
+      updateSearchOptions({ category, page: 1 }),
   };
 };

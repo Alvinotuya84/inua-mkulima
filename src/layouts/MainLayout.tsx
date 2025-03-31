@@ -22,6 +22,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import AssessmentIcon from "@mui/icons-material/Assessment";
+import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import CloseIcon from "@mui/icons-material/Close";
 import { useAuth } from "@/hooks/use-auth";
@@ -117,6 +118,13 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
               <ListItemText primary="Dashboard" />
             </ListItem>
 
+            <ListItem button onClick={() => handleNavigation("/products")}>
+              <ListItemIcon>
+                <ShoppingBasketIcon />
+              </ListItemIcon>
+              <ListItemText primary="Products" />
+            </ListItem>
+
             <ListItem button onClick={() => handleNavigation("/transactions")}>
               <ListItemIcon>
                 <ReceiptIcon />
@@ -164,6 +172,13 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                 <DashboardIcon />
               </ListItemIcon>
               <ListItemText primary="Dashboard" />
+            </ListItem>
+
+            <ListItem button onClick={() => handleNavigation("/products")}>
+              <ListItemIcon>
+                <ShoppingBasketIcon />
+              </ListItemIcon>
+              <ListItemText primary="Products" />
             </ListItem>
 
             <ListItem button onClick={() => handleNavigation("/transactions")}>
