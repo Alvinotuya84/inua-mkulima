@@ -63,7 +63,7 @@ const Dashboard: React.FC = () => {
   const [walletBalance, setWalletBalance] = useState(2400);
 
   const handleNewTransaction = () => {
-    navigate("/product-details");
+    navigate("/products");
   };
 
   const handleViewTransactions = () => {

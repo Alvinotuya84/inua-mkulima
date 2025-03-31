@@ -144,7 +144,7 @@ const Transactions: React.FC = () => {
   }, [searchQuery, statusFilter, transactions]);
 
   const handleNewTransaction = () => {
-    navigate("/product-details");
+    navigate("/products");
   };
 
   const handleViewReceipt = (transactionId: string) => {
