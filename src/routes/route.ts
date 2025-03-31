@@ -4,7 +4,9 @@ export const ROUTES = {
   HOME: "/",
   LOGIN: "/login",
   DASHBOARD: "/dashboard",
+  PRODUCTS: "/products",
   PRODUCT_DETAILS: "/product-details",
+  PRODUCT_VIEW: "/product/:id",
   SUMMARY: "/summary",
   TRANSACTIONS: "/transactions",
   REPORTS: "/reports",
@@ -35,10 +37,20 @@ const routes: RouteConfig[] = [
     isProtected: true,
   },
   {
+    path: ROUTES.PRODUCTS,
+    component: lazy(() => import("@/pages/Products")),
+    isProtected: true,
+  },
+  {
     path: ROUTES.PRODUCT_DETAILS,
     component: lazy(() => import("@/pages/ProductDetails")),
     isProtected: true,
   },
+  // {
+  //   path: ROUTES.PRODUCT_VIEW,
+  //   component: lazy(() => import("@/pages/ProductDetail")),
+  //   isProtected: true,
+  // },
   {
     path: ROUTES.SUMMARY,
     component: lazy(() => import("@/pages/Summary")),
@@ -54,11 +66,11 @@ const routes: RouteConfig[] = [
     component: lazy(() => import("@/pages/Reports")),
     isProtected: true,
   },
-  //   {
-  //     path: ROUTES.RECEIPT,
-  //     component: lazy(() => import("@/pages/Receipt")),
-  //     isProtected: true,
-  //   },
+  // {
+  //   path: ROUTES.RECEIPT,
+  //   component: lazy(() => import("@/pages/Receipt")),
+  //   isProtected: true,
+  // },
   {
     path: ROUTES.NOT_FOUND,
     component: lazy(() => import("@/pages/NotFound")),
