@@ -111,28 +111,28 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         <Toolbar />
         <Box sx={{ overflow: "auto" }}>
           <List>
-            <ListItem button onClick={() => handleNavigation("/dashboard")}>
+            <ListItem onClick={() => handleNavigation("/dashboard")}>
               <ListItemIcon>
                 <DashboardIcon />
               </ListItemIcon>
               <ListItemText primary="Dashboard" />
             </ListItem>
 
-            <ListItem button onClick={() => handleNavigation("/products")}>
+            <ListItem onClick={() => handleNavigation("/products")}>
               <ListItemIcon>
                 <ShoppingBasketIcon />
               </ListItemIcon>
               <ListItemText primary="Products" />
             </ListItem>
 
-            <ListItem button onClick={() => handleNavigation("/transactions")}>
+            <ListItem onClick={() => handleNavigation("/transactions")}>
               <ListItemIcon>
                 <ReceiptIcon />
               </ListItemIcon>
               <ListItemText primary="Transactions" />
             </ListItem>
 
-            <ListItem button onClick={() => handleNavigation("/reports")}>
+            <ListItem onClick={() => handleNavigation("/reports")}>
               <ListItemIcon>
                 <AssessmentIcon />
               </ListItemIcon>
@@ -141,7 +141,7 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           </List>
           <Divider />
           <List>
-            <ListItem button onClick={handleLogoutClick}>
+            <ListItem onClick={handleLogoutClick}>
               <ListItemIcon>
                 <ExitToAppIcon />
               </ListItemIcon>
@@ -151,7 +151,6 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         </Box>
       </Drawer>
 
-      {/* Desktop sidebar - hidden on mobile */}
       <Drawer
         variant="permanent"
         sx={{
@@ -167,28 +166,28 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         <Toolbar />
         <Box sx={{ overflow: "auto" }}>
           <List>
-            <ListItem button onClick={() => handleNavigation("/dashboard")}>
+            <ListItem onClick={() => handleNavigation("/dashboard")}>
               <ListItemIcon>
                 <DashboardIcon />
               </ListItemIcon>
               <ListItemText primary="Dashboard" />
             </ListItem>
 
-            <ListItem button onClick={() => handleNavigation("/products")}>
+            <ListItem onClick={() => handleNavigation("/products")}>
               <ListItemIcon>
                 <ShoppingBasketIcon />
               </ListItemIcon>
               <ListItemText primary="Products" />
             </ListItem>
 
-            <ListItem button onClick={() => handleNavigation("/transactions")}>
+            <ListItem onClick={() => handleNavigation("/transactions")}>
               <ListItemIcon>
                 <ReceiptIcon />
               </ListItemIcon>
               <ListItemText primary="Transactions" />
             </ListItem>
 
-            <ListItem button onClick={() => handleNavigation("/reports")}>
+            <ListItem onClick={() => handleNavigation("/reports")}>
               <ListItemIcon>
                 <AssessmentIcon />
               </ListItemIcon>
@@ -198,13 +197,11 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         </Box>
       </Drawer>
 
-      {/* Main content */}
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <Toolbar />
         {children}
       </Box>
 
-      {/* Logout confirmation dialog */}
       <Dialog
         open={logoutDialogOpen}
         onClose={handleLogoutCancel}
